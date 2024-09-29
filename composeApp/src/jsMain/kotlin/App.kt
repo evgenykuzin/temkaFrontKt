@@ -8,6 +8,8 @@ import dev.inmo.tgbotapi.webapps.webApp
 enum class Screen {
     CLICKER,
     FRIENDS_LIST,
+    SEARCH_GAME,
+    GAME_INFO
 }
 
 // Don't use in real code
@@ -16,16 +18,19 @@ var currentScreen by mutableStateOf(Screen.CLICKER)
 @Composable
 fun App() {
     when (currentScreen) {
-        Screen.CLICKER -> ClickerScreen(
-            onFriendsList = {
-                currentScreen = Screen.FRIENDS_LIST
-            }
-        )
+        Screen.CLICKER -> ClickerScreen {
+            currentScreen = Screen.FRIENDS_LIST
+        }
 
-        Screen.FRIENDS_LIST -> FriendsListScreen(
-            onBack = {
-                currentScreen = Screen.CLICKER
-            },
-        )
+        Screen.FRIENDS_LIST -> FriendsListScreen {
+            currentScreen = Screen.CLICKER
+        }
+
+        Screen.SEARCH_GAME -> SearchGameScreen {
+            currentScreen = Screen.CLICKER
+        }
+        Screen.GAME_INFO -> GameInfoScreen {
+            currentScreen = Screen.SEARCH_GAME
+        }
     }
 }

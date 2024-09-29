@@ -11,7 +11,7 @@ import kotlinx.serialization.json.Json
 // don't use in real code!
 object TapClient {
 
-    private const val SERVER_URL = "http://localhost:8081/taps"
+    private const val SERVER_URL = "https://5805-91-108-28-49.ngrok-free.app/taps"
 
     private val client: HttpClient = HttpClient(TapClientEngine) {
         install(ContentNegotiation) {
@@ -23,22 +23,26 @@ object TapClient {
     }
 
     suspend fun sendCurrentScore(score: Long) {
-        client.post("$SERVER_URL/score/") {
-            setBody(SendCurrentScoreRequest(score))
-            contentType(ContentType.Application.Json)
+        try {
+            client.post("$SERVER_URL/score/") {
+                setBody(SendCurrentScoreRequest(score))
+                contentType(ContentType.Application.Json)
+            }
+        } catch (t: Throwable) {
+            t.printStackTrace()
         }
     }
 
     suspend fun fetchCurrentScore(): Long {
-        return client.get("$SERVER_URL/score/").body<GetCurrentScoreResponse>().score
+        return client.get("$SERVER_URL/score/").body<GetCurrentScoreResponse>()::score tryOrElse 0
     }
 
     suspend fun fetchFriendsList(): List<FriendInfo> {
-        return client.get("$SERVER_URL/friends/").body<GetFriendsListResponse>().friends
+        return client.get("$SERVER_URL/friends/").body<GetFriendsListResponse>()::friends tryOrElse listOf()
     }
 
     suspend fun fetchUpgradeLink(): String {
-        return client.post("$SERVER_URL/upgrade/").body<UpgradeResponse>().invoiceLink
+        return client.post("$SERVER_URL/upgrade/").body<UpgradeResponse>()::invoiceLink tryOrElse "http://localhost/invoie"
     }
 
 }

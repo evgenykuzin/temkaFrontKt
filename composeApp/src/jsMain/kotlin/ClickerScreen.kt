@@ -2,6 +2,7 @@ import androidx.compose.runtime.*
 import dev.inmo.kslog.common.LogLevel
 import dev.inmo.kslog.common.log
 import dev.inmo.kslog.common.logger
+import dev.inmo.micro_utils.coroutines.invokeOnFirst
 import dev.inmo.tgbotapi.webapps.invoice.InvoiceStatus
 import dev.inmo.tgbotapi.webapps.invoice.statusTyped
 import dev.inmo.tgbotapi.webapps.webApp
@@ -39,7 +40,7 @@ fun ClickerScreen(
         }
     }
     WebAppMainButton(
-        text = "Список друзей",
+        text = "Сп?исок друзей",
         hideOnDispose = false,
         onClick = onFriendsList
     )
@@ -63,12 +64,24 @@ fun ClickerScreen(
                     classes(ClickerStyles.MainImage)
                     onClick {
                         score.value = score.value.inc()
-                        println("CurrentScore: ${score.value}")
+                        println("currentScore: ${score.value}")
                         logger.log(LogLevel.INFO, "CurrentScore: ${score.value}")
                     }
 
                 }
             )
+            //val coroutineScope = rememberCoroutineScope()
+            Button(
+                attrs = {
+                    classes(ClickerStyles.PayButton) //TODO SearchGame
+                    onClick {
+                        currentScreen = Screen.SEARCH_GAME
+                        logger.log(LogLevel.INFO, "SCREAN: ${currentScreen}")
+                    }
+                }
+            ) {
+                Text("Найти темку..")
+            }
         }
     }
 }
